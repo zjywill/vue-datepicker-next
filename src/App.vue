@@ -28,7 +28,7 @@ export default defineComponent({
       ],
       value: new Date(),
       append: false,
-      rangeValue: [new Date(2019, 9, 4, 8, 30, 0), new Date(2019, 9, 4, 18, 30, 0)],
+      rangeValue: [new Date(), new Date(2022, 6, 4, 18, 30, 0)],
       formatter: {
         stringify(date: Date) {
           return format(date, 'DD/MMM/YYYY');
@@ -49,6 +49,9 @@ export default defineComponent({
     handleUpdate(val: Date) {
       this.value = val;
     },
+    onDatePick(date: any) {
+      console.log('onDatePick', date);
+    },
   },
 });
 </script>
@@ -57,21 +60,11 @@ export default defineComponent({
   <div>
     <button @click="append = !append">ass</button>
     <DatePicker
-      v-model:value="value"
-      v-bind="inputProps"
-      :clearable="false"
-      :append-to-body="append"
-      type="datetime"
-      :time-picker-options="{ start: '00:00', end: '09:00', step: '00:30' }"
-      :disabled-date="(date) => date < new Date(2021, 10, 9)"
-      :open="true"
-    ></DatePicker>
-    <DatePicker
       v-model:value="rangeValue"
       :append-to-body="false"
+      :open="true"
       range
-      :shortcuts="shortcuts"
-      :editable="false"
+      @change="onDatePick"
     ></DatePicker>
   </div>
 </template>
@@ -84,5 +77,61 @@ export default defineComponent({
   /* color: #2c3e50; */
   margin-top: 60px;
   margin-left: 60px;
+}
+</style>
+
+<style lang="scss">
+.colab_calendar-datepicker {
+  position: relative;
+
+  user-select: none;
+
+  .colab_calendar-input-wrapper {
+    display: none;
+  }
+  .colab_calendar-datepicker-main {
+    border: none;
+  }
+  .colab_calendar-datepicker-popup {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    z-index: 9 !important;
+
+    .colab_calendar-datepicker-content {
+      width: auto;
+      // calendar
+      .colab_calendar-calendar {
+        width: 260px;
+
+        .colab_calendar-calendar-content {
+          background: #fafafc;
+          border-radius: 4px;
+        }
+        .colab_calendar-calendar-content .cell.active {
+          // border-radius: 4px;
+          background: #ace8db;
+          color: #19181a;
+        }
+        .colab_calendar-table-date .today {
+          background: rgba(56, 205, 169, 0.1);
+          color: #19b893;
+        }
+        .colab_calendar-calendar-content .cell.in-range {
+          background: #d3f1ec;
+          color: #19181a;
+        }
+      }
+    }
+  }
+  // range
+  &.colab_calendar-datepicker-range {
+    width: 520px;
+  }
+  .colab_calendar-calendar + .colab_calendar-calendar {
+    border-left: 1px solid #ffffff;
+  }
 }
 </style>

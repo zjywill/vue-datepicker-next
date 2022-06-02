@@ -21,6 +21,6 @@ git init --initial-branch=main
 git add -A
 git commit -m "$MESSAGE"
 
-git push -f git@github.com:mengxiong10/vue-datepicker-next.git main:gh-pages
+git push -f git@github.com:zjywill/vue-datepicker-next.git main:gh-pages
 
 cd -

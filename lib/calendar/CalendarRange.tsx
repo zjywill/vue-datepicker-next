@@ -1,5 +1,6 @@
+import Calendar, { CalendarProps, calendarProps } from './Calendar';
 import { computed, ref, watchEffect } from 'vue';
-import { usePrefixClass } from '../context';
+import { defineVueComponent, withDefault } from '../vueUtil';
 import {
   diffCalendarMonths,
   isValidDate,
@@ -7,8 +8,7 @@ import {
   setMonth,
   startOfDay,
 } from '../util/date';
-import Calendar, { CalendarProps, calendarProps } from './Calendar';
-import { defineVueComponent, withDefault } from '../vueUtil';
+
 import { PickerType } from '../type';
 
 export type DateRange = [Date, Date];
@@ -39,8 +39,6 @@ function CalendarRange(originalProps: CalendarRangeProps) {
     defaultValue: new Date(),
     type: 'date' as PickerType,
   });
-
-  const prefixClass = usePrefixClass();
 
   const defaultValues = computed(() => {
     let values = Array.isArray(props.defaultValue)
@@ -102,9 +100,6 @@ function CalendarRange(originalProps: CalendarRangeProps) {
   const updateCalendarStart = (date: Date) => {
     updateCalendars([date, calendars.value[1]], 0);
   };
-  const updateCalendarEnd = (date: Date) => {
-    updateCalendars([calendars.value[0], date], 1);
-  };
 
   watchEffect(() => {
     const dates = isValidRangeDate(props.value) ? props.value : defaultValues.value;
@@ -135,24 +130,21 @@ function CalendarRange(originalProps: CalendarRangeProps) {
   };
 
   return () => {
-    const calendarRange = calendars.value.map((calendar, index) => {
-      const calendarProps = {
-        ...props,
-        calendar,
-        value: innerValue.value,
-        defaultValue: defaultValues.value[index],
-        getClasses: getRangeClasses,
-        // don't update when range is true
-        partialUpdate: false,
-        multiple: false,
-        ['onUpdate:value']: handlePick,
-        onCalendarChange: index === 0 ? updateCalendarStart : updateCalendarEnd,
-        onDateMouseLeave: handleMouseLeave,
-        onDateMouseEnter: handleMouseEnter,
-      };
-      return <Calendar {...calendarProps}></Calendar>;
-    });
-    return <div class={`${prefixClass}-calendar-range`}>{calendarRange}</div>;
+    const calendarProps = {
+      ...props,
+      calendar: calendars.value[0],
+      value: innerValue.value,
+      defaultValue: defaultValues.value[0],
+      getClasses: getRangeClasses,
+      // don't update when range is true
+      partialUpdate: false,
+      multiple: false,
+      ['onUpdate:value']: handlePick,
+      onCalendarChange: updateCalendarStart,
+      onDateMouseLeave: handleMouseLeave,
+      onDateMouseEnter: handleMouseEnter,
+    };
+    return <Calendar {...calendarProps}></Calendar>;
   };
 }
 
