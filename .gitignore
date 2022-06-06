@@ -9,8 +9,6 @@ node_modules
 /index.*
 !index.html
 
-dist
-
 /scss
 
 /temp
